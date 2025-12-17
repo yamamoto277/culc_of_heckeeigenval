@@ -284,6 +284,13 @@ if __name__ == "__main__":
 
     
     print(calc_heckeeigenval(heckerep, theeigenvector, basis, eqclass, expression_matrix, representatives))
+    heckerep = []
+    for i in range(2):
+        for j in range(2):
+            heckerep.append(np.array([[2,i,j],[0,1,0],[0, 0, 1]]))
+
+    
+    print(calc_heckeeigenval(heckerep, theeigenvector, basis, eqclass, expression_matrix, representatives))
 
     heckerep = [np.array([[1,0,0],[64,1,0],[0,0,1]]), np.array([[1,0,0],[64,1,0],[64,0,1]]), np.array([[1,0,0],[0,1,0],[64,0,1]])]
     print(calc_heckeeigenval(heckerep, theeigenvector, basis, eqclass, expression_matrix, representatives))
