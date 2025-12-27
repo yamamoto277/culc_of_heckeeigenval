@@ -96,15 +96,17 @@ def calc_heckeeigenval(heckerep, eigenvector, basis, eqclass, expression_matrix,
                 z = int(symbol[2][0])%N
                 if (int(eqclass[x][y][z][0]), int(eqclass[x][y][z][1]), int(eqclass[x][y][z][2])) in representatives:
                     heckematrix[i] -= eqclass[x][y][z][3] * expression_matrix[representatives[(int(eqclass[x][y][z][0]), int(eqclass[x][y][z][1]), int(eqclass[x][y][z][2]))]][-basisnum:]
+    results = np.zeros(basisnum, np.complex128)
     for i in range(basisnum):
-        if abs(eigenvector[i]) > 0.1:
-            return (heckematrix@eigenvector)[i] / eigenvector[i]
+        if abs(eigenvector[i]) > 0.01:
+            results[i] = (heckematrix@eigenvector)[i] / eigenvector[i]
+    return results
 
 
 if __name__ == "__main__":
 
     N=128
-    Nmim = 1
+    Nmim = 0
 
     inversenum = []
     for i in range(N):
@@ -245,7 +247,7 @@ if __name__ == "__main__":
                         if abs(elements[0]) > 0.001:
                             break
                         
-                   
+    print(basisnum)               
                    
     p=3
     heckerep = []
@@ -270,10 +272,11 @@ if __name__ == "__main__":
 
 
     np.set_printoptions(precision=3, suppress=True, floatmode='fixed')
+    print("eigenvalue : ", LA.eig(heckematrix).eigenvalues)
 
-    theeigenvector = np.copy(LA.eig(heckematrix).eigenvectors[:,4])
+    theeigenvector = np.copy(LA.eig(heckematrix).eigenvectors[:,24])
     x=1
-    print(calc_heckeeigenval(heckerep, theeigenvector, basis_of_128, eqclass))
+    print(calc_heckeeigenval(heckerep, theeigenvector, basis, eqclass, expression_matrix, representatives))
 
 
     heckerep = []
@@ -309,6 +312,22 @@ if __name__ == "__main__":
         detA=1
         heckerep.append(np.array([[4+32*LA.det(A)*detA,A[1,1]*detA ,-A[0,1]*detA] ,[128* A[0,0],4,0],[128*A[1,0],0,4]]))
     
+    print(calc_heckeeigenval(heckerep, theeigenvector, basis, eqclass, expression_matrix, representatives))
+
+    mod8mats = []
+    for i in range(8):
+        for j in range(8):
+            for k in range(8):
+                for l in range(8):
+                    A = np.array([[i,j],[k,l]], dtype='int64')
+                    if int(i*l-j*k)%8 == 1:
+                        mod8mats.append(A)
+    heckerep = []
+    for A in mod8mats:
+        detA=1
+        B = np.array([[-8+16*LA.det(A),A[1,1],-A[0,1]] ,[128* A[0,0],8,0],[128*A[1,0],0,8]])
+        heckerep.append(B)
+
     print(calc_heckeeigenval(heckerep, theeigenvector, basis, eqclass, expression_matrix, representatives))
 
     heckerep = []
